@@ -31,6 +31,7 @@ public class Bird {
     }
 
     public void jump() {
+        velocity.y = 250;
     }
 
     public void update(float deltaTime) {

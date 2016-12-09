@@ -4,6 +4,7 @@
  */
 package com.libdgx.flappy.states;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.libdgx.flappy.Bird;
@@ -52,6 +53,11 @@ public class PlayState extends State {
     @Override
     public void handleInput() {
         // Handle any player inpur changes
+        // Flaying with the bird
+        if(Gdx.input.justTouched()){
+            // Make the bird jump
+            bird.jump();
+        }
     }
     
     @Override
