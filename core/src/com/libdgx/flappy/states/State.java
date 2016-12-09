@@ -50,8 +50,17 @@ public abstract class State {
         cam.position.y = y;
         cam.update();
     }
-    
-    public Matrix4 getCombinedCamera(){
-      return cam.combined;  
+
+    public Matrix4 getCombinedCamera() {
+        return cam.combined;
+    }
+
+    public void moveCameraX(float x) {
+        cam.position.x = x;
+        cam.update();
+    }
+
+    public float getCameraX() {
+        return cam.position.x;
     }
 }

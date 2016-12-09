@@ -9,16 +9,22 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.libdgx.flappy.Bird;
 import com.libdgx.flappy.FlappyBird;
+import com.libdgx.flappy.Pipe;
 
 /**
  *
  * @author tatad6701
  */
 public class PlayState extends State {
-    
+
     private Bird bird;
+    // Array of pipes
+    private Pipe[] pipes;
     private Texture bg;
-    
+    // For following camera
+    private final float CAM_X_OFFSET = 30;
+    private final float PIPE_GAP_AMOUNT = 3;
+
     public PlayState(StateManager sm) {
         super(sm);
         setCameraView(FlappyBird.WIDTH / 2, FlappyBird.HEIGHT / 2);
@@ -27,8 +33,16 @@ public class PlayState extends State {
         bird = new Bird(50, 200);
         // Load in the background
         bg = new Texture("bg.png");
+        // Move the camera to match the moving  
+        moveCameraX(bird.getX() + CAM_X_OFFSET);
+        // Pipes!
+        // Creating the pipes
+        pipes = new Pipe[3];
+        for (int i = 0; i < pipes.length; i++) {
+            pipes[i] = new Pipe(200 + PIPE_GAP_AMOUNT * Pipe.WIDTH * i);
+        }
     }
-    
+
     @Override
     public void render(SpriteBatch batch) {
         // Draw the screen
@@ -40,26 +54,43 @@ public class PlayState extends State {
         batch.draw(bg, 0, 0);
         // Draw the bird
         bird.render(batch);
+        // Draw the pipes
+        for (int i = 0; i < pipes.length; i++) {
+            pipes[i].render(batch);
+        }
         // End the drawing
         batch.end();
     }
-    
+
     @Override
     public void update(float deltaTime) {
         // Update the game models
         bird.update(deltaTime);
+        // Move the camera to match the moving 
+        moveCameraX(bird.getX() + CAM_X_OFFSET);
+        // Adjust the pipes
+        for (int i = 0; i < pipes.length; i++) {
+            // Has the bird passed the pipe
+            if (getCameraX() - FlappyBird.WIDTH / 4 > pipes[i].getX() + Pipe.WIDTH) {
+                // Moving to the next three parts
+                float x = pipes[i].getX() + PIPE_GAP_AMOUNT * Pipe.WIDTH * 3;
+                // Plot the pipes
+                pipes[i].setX(x);
+
+            }
+        }
     }
-    
+
     @Override
     public void handleInput() {
         // Handle any player inpur changes
         // Flaying with the bird
-        if(Gdx.input.justTouched()){
+        if (Gdx.input.justTouched()) {
             // Make the bird jump
             bird.jump();
         }
     }
-    
+
     @Override
     public void dispose() {
     }

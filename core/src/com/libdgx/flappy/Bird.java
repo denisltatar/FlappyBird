@@ -19,13 +19,16 @@ public class Bird {
     // How fast the bird is moving
     private Vector3 velocity;
     private Texture birdPic;
+    // Gravity of the game
     private final float GRAVITY = -15;
+    // The movement of the bird
+    private final float MOVEMENT = 105;
 
     public Bird(int x, int y) {
         // Position of the bird
         position = new Vector3(x, y, 0);
         // Velocity of the bird
-        velocity = new Vector3(0, 0, 0);
+        velocity = new Vector3(MOVEMENT, 0, 0);
         // Load in the picture of the bird
         birdPic = new Texture("bird.png");
     }
@@ -47,5 +50,10 @@ public class Bird {
 
     public void render(SpriteBatch batch) {
         batch.draw(birdPic, position.x, position.y);
+    }
+
+    // Access method to the bird
+    public float getX() {
+        return position.x;
     }
 }
