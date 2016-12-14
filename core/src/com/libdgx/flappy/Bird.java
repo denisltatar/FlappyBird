@@ -6,6 +6,7 @@ package com.libdgx.flappy;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -19,6 +20,8 @@ public class Bird {
     // How fast the bird is moving
     private Vector3 velocity;
     private Texture birdPic;
+    // Invisible rectangles!
+    private Rectangle bounds;
     // Gravity of the game
     private final float GRAVITY = -15;
     // The movement of the bird
@@ -31,6 +34,8 @@ public class Bird {
         velocity = new Vector3(MOVEMENT, 0, 0);
         // Load in the picture of the bird
         birdPic = new Texture("bird.png");
+        // Creat the rectangle of the bird!
+        bounds = new Rectangle(position.x, position.y, birdPic.getWidth(), birdPic.getHeight());
     }
 
     public void jump() {
@@ -46,6 +51,11 @@ public class Bird {
         position.add(velocity);
         // Unscale velocity
         velocity.scl(1 / deltaTime);
+
+
+
+        // Set the new bounds
+        bounds.setPosition(position.x, position.y);
     }
 
     public void render(SpriteBatch batch) {
@@ -55,5 +65,19 @@ public class Bird {
     // Access method to the bird
     public float getX() {
         return position.x;
+    }
+
+    // Access method to the bird
+    public float getY() {
+        return position.y;
+    }
+
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
+    // Getting rid of the bird! Saves space
+    public void dispose() {
+        birdPic.dispose();
     }
 }

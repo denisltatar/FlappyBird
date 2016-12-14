@@ -7,6 +7,7 @@ package com.libdgx.flappy.states;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  *
@@ -62,5 +63,21 @@ public abstract class State {
 
     public float getCameraX() {
         return cam.position.x;
+    }
+
+    public float getCameraY() {
+        return cam.position.y;
+    }
+
+    public float getViewWidth() {
+        return cam.viewportWidth;
+    }
+
+    public float getViewHeight() {
+        return cam.viewportHeight;
+    }
+
+    public void unproject(Vector3 touch) {
+        cam.unproject(touch);
     }
 }

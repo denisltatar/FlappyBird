@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.libdgx.flappy.states.MenuState;
 import com.libdgx.flappy.states.PlayState;
 import com.libdgx.flappy.states.State;
 import com.libdgx.flappy.states.StateManager;
@@ -26,7 +27,7 @@ public class FlappyBird extends ApplicationAdapter {
         // Where to be drawn within (The colour, red, green, blue)
         Gdx.gl.glClearColor(1, 1, 1, 1);
         stateManager = new StateManager();
-        State firstScreen = new PlayState(stateManager);
+        State firstScreen = new MenuState(stateManager);
         // To load the first screen
         stateManager.push(firstScreen);
     }

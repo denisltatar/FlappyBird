@@ -5,7 +5,9 @@
 package com.libdgx.flappy.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.libdgx.flappy.Bird;
 import com.libdgx.flappy.FlappyBird;
@@ -24,6 +26,8 @@ public class PlayState extends State {
     // For following camera
     private final float CAM_X_OFFSET = 30;
     private final float PIPE_GAP_AMOUNT = 3;
+    private int score;
+    private BitmapFont font;
 
     public PlayState(StateManager sm) {
         super(sm);
@@ -41,6 +45,10 @@ public class PlayState extends State {
         for (int i = 0; i < pipes.length; i++) {
             pipes[i] = new Pipe(200 + PIPE_GAP_AMOUNT * Pipe.WIDTH * i);
         }
+
+        // Set up the font and the score
+        score = 0;
+        font = new BitmapFont();
     }
 
     @Override
@@ -51,7 +59,9 @@ public class PlayState extends State {
         // Beginning the stuff to draw
         batch.begin();
         // Drawy the background
-        batch.draw(bg, 0, 0);
+        batch.draw(bg, getCameraX() - getViewWidth() / 2, getCameraY() - getViewHeight() / 2);
+        // Draw the score
+        font.draw(batch, "" + score, getCameraX(), getCameraY() + 150);
         // Draw the bird
         bird.render(batch);
         // Draw the pipes
@@ -68,6 +78,40 @@ public class PlayState extends State {
         bird.update(deltaTime);
         // Move the camera to match the moving 
         moveCameraX(bird.getX() + CAM_X_OFFSET);
+
+        // Did the bird hit the floor?
+        if (bird.getY() <= 0) {
+            // End the game
+            StateManager gsm = getStateManager();
+            // Pop off the game state
+            gsm.pop();
+        }
+        // Going through all the pipes
+        for (int i = 0; i < pipes.length; i++) {
+            // Did the bird hit the pipe
+            if (pipes[i].collides(bird)) {
+                // End the game 
+                StateManager gsm = getStateManager();
+                // Pop off the game screen
+                gsm.pop();
+                Preferences pref = Gdx.app.getPreferences("highscore");
+                int highScore = pref.getInteger("highscore", 0);
+                // Did they beat the highscore?
+                if (score > highScore) {
+                    // Update the highschore
+                    pref.putInteger("highscore", score);
+                    // Save it
+                    pref.flush();
+                }
+                // Has the bird passed the pipe
+            } else if (!pipes[i].hasPassed() && bird.getX() > pipes[i].getX() + Pipe.WIDTH) {
+                score++;
+                pipes[i].pass();
+            }
+
+
+        }
+
         // Adjust the pipes
         for (int i = 0; i < pipes.length; i++) {
             // Has the bird passed the pipe
@@ -76,7 +120,6 @@ public class PlayState extends State {
                 float x = pipes[i].getX() + PIPE_GAP_AMOUNT * Pipe.WIDTH * 3;
                 // Plot the pipes
                 pipes[i].setX(x);
-
             }
         }
     }
@@ -93,5 +136,10 @@ public class PlayState extends State {
 
     @Override
     public void dispose() {
+        bg.dispose();
+        bird.dispose();
+        for (int i = 0; i < pipes.length; i++) {
+            pipes[i].dispose();
+        }
     }
 }
